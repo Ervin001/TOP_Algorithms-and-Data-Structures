@@ -89,6 +89,7 @@ class Tree {
     if (root.data > key) {
       return this.find(key, root.left);
     }
+    return root;
   }
 
   insert(value) {
@@ -208,9 +209,53 @@ class Tree {
     this.postorderFunc(root.right, arr);
     arr.push(root.data);
   }
-  height() {}
-  depth() {}
-  isBalanced() {}
+
+  height(node = this.root) {
+    if (node === null) {
+      return -1;
+    }
+
+    const leftH = this.height(node.left);
+    const rightH = this.height(node.right);
+    return Math.max(leftH, rightH) + 1;
+  }
+
+  depth(value, node = this.root) {
+    if (node === null) return -1;
+
+    let dist = 0;
+
+    if (value.data === node.data) {
+      return dist;
+    } else if (value.data !== node.data) {
+      dist++;
+      let leftDist = this.depth(value, node.left);
+      let rightDist = this.depth(value, node.right);
+      if (leftDist !== -1) {
+        return dist + leftDist;
+      } else if (rightDist !== -1) {
+        return dist + rightDist;
+      } else {
+        return -1;
+      }
+    }
+  }
+
+  isBalanced(root = this.root) {
+    if (root === null) return true;
+
+    const lh = this.height(root.left);
+    const rh = this.height(root.right);
+
+    if (
+      Math.abs(lh - rh) <= 1 &&
+      this.isBalanced(root.left === true) &&
+      this.isBalanced(root.right === true)
+    )
+      return true;
+    // if code reaches here then tree is not balanced
+    return false;
+  }
   rebalance() {}
 }
 
@@ -222,8 +267,9 @@ class Tree {
 //   17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
 // ];
 
-// const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
-const array = [1, 2, 3, 4, 5, 6, 7];
+const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+// const array = [1, 2, 3, 4, 5, 6, 7];
+// const array = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
 const tree = new Tree(array);
 
@@ -232,6 +278,17 @@ const tree = new Tree(array);
 // tree.prettyPrint();
 // console.log(tree.find(7));
 // tree.insert(33);
+// tree.insert(3353453);
+// tree.insert(333423);
+// tree.insert(333323);
+// tree.insert(14213);
+// tree.insert(201421);
+// tree.insert(94720);
+// tree.insert(9823132);
+// tree.insert(8492);
+// tree.insert(4413424322);
+// tree.insert(342323424322);
+// tree.insert(441342123);
 
 // tree.delete(2);
 
@@ -240,4 +297,8 @@ tree.prettyPrint();
 
 // console.log(tree.inorder());
 // console.log(tree.preorder());
-console.log(tree.postorder());
+// console.log(tree.postorder());
+console.log(tree.height(tree.find(5)));
+// console.log(tree.find(6));
+console.log(tree.depth(tree.find(8)));
+console.log(tree.isBalanced());
