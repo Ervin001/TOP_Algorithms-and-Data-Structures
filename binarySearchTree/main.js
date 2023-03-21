@@ -118,34 +118,32 @@ class Tree {
 
   deleteNode(root = this.root, value) {
     // base case
-    if (root === null) return null;
+    if (root === null) return root;
 
-    if (value === root.data) {
-      if (root.left === null && root.right === null) {
-        return null;
-      }
+    if (value < root.data) {
+      root.left = this.deleteNode(root.left, value);
+    } else if (value > root.data) {
+      root.right = this.deleteNode(root.right, value);
+    } else {
       if (root.left === null) {
         return root.right;
-      }
-
-      if (root.right === null) {
+      } else if (root.right === null) {
         return root.left;
+      } else {
+        root.data = this.minValue(root.right);
+        root.right = this.deleteNode(root.right, root.data);
       }
-
-      const tempRoot = root.right;
-      while (tempRoot.left !== null) {
-        tempRoot = tempRoot.left;
-      }
-      root.data = tempNode(root.right, value);
-      root.right = this.deleteNode(root.right, tempRoot.data);
-      return root;
-    } else if (value < root.data) {
-      root.left = this.deleteNode(root.left, value);
-      return root;
-    } else {
-      node.right = this.deleteNode(root.right, value);
-      return root;
     }
+    return root;
+  }
+
+  minValue(root) {
+    let minV = root.data;
+    while (root.left !== null) {
+      minV = root.left.data;
+      root = root.left;
+    }
+    return minV;
   }
 
   levelOrder(func) {
@@ -243,20 +241,23 @@ class Tree {
 
   isBalanced(root = this.root) {
     if (root === null) return true;
-
     const lh = this.height(root.left);
     const rh = this.height(root.right);
-
     if (
       Math.abs(lh - rh) <= 1 &&
-      this.isBalanced(root.left === true) &&
-      this.isBalanced(root.right === true)
+      this.isBalanced(root.left) === true &&
+      this.isBalanced(root.right) === true
     )
       return true;
-    // if code reaches here then tree is not balanced
+
+    // if code reaches here, tree is not balanced
     return false;
   }
-  rebalance() {}
+
+  rebalance() {
+    const arr = [...this.inorder()];
+    this.root = this.buildTree(arr, 0, arr.length - 1);
+  }
 }
 
 // const array = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 11];
@@ -275,30 +276,40 @@ const tree = new Tree(array);
 
 // console.log(tree.root);
 
-// tree.prettyPrint();
 // console.log(tree.find(7));
 // tree.insert(33);
-// tree.insert(3353453);
-// tree.insert(333423);
-// tree.insert(333323);
-// tree.insert(14213);
-// tree.insert(201421);
-// tree.insert(94720);
-// tree.insert(9823132);
-// tree.insert(8492);
-// tree.insert(4413424322);
-// tree.insert(342323424322);
-// tree.insert(441342123);
+tree.insert(3353453);
+tree.insert(333423);
+tree.insert(333323);
+tree.insert(14213);
+tree.insert(5623);
+tree.insert(4223);
+tree.insert(1342123);
+tree.insert(441343);
 
 // tree.delete(2);
 
 // console.log(tree.levelOrder());
-tree.prettyPrint();
+// tree.prettyPrint();
 
 // console.log(tree.inorder());
 // console.log(tree.preorder());
 // console.log(tree.postorder());
-console.log(tree.height(tree.find(5)));
+// console.log(tree.height(tree.find(5)));
 // console.log(tree.find(6));
-console.log(tree.depth(tree.find(8)));
+// console.log(tree.depth(tree.find(8)));
 console.log(tree.isBalanced());
+tree.prettyPrint();
+
+tree.rebalance();
+console.log(tree.isBalanced());
+tree.delete(4223);
+tree.delete(333323);
+tree.delete(3353453);
+tree.delete(333423);
+tree.delete(441343);
+tree.delete(17);
+tree.delete(13);
+tree.delete(1);
+
+tree.prettyPrint();
